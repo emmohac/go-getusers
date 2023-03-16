@@ -43,22 +43,26 @@ func FindAll(context *gin.Context) {
 }
 
 func Update(context *gin.Context) {
-	var input model.UserInput
+	var input model.UserUpdateInput
+	username := context.Param("id")
 
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user := model.User{
-		Username: input.Username,
-		Password: input.Password,
-		Admin:    input.Admin,
-	}
-
-	updatedUser, err := user.Update()
+	user, err := model.Find(username)
 
 	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user.Password = input.Password
+	user.Admin = input.Admin || false
+	updatedUser, er := user.Update()
+
+	if er != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

@@ -65,7 +65,8 @@ func serveApplication() {
 		v1.GET("ping", Pong)
 		v1.GET("users", controller.FindAll)
 		v1.POST("users", controller.Create)
-		v1.PUT("users", controller.Update)
+		v1.PUT("users/:id", controller.Update)
+		v1.DELETE("users", controller.Delete)
 	}
 
 	router.Run(":3000")

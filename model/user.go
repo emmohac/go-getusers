@@ -45,13 +45,30 @@ func FindAll() ([]User, error) {
 }
 
 func (user *User) Update() (*User, error) {
-	err := database.Database.Find(&user).Error
+	err := database.Database.Updates(&user).Error
 
 	if err != nil {
 		return &User{}, err
 	}
 
-	err = database.Database.Updates(&user).Error
+	return user, nil
+}
+
+func (user *User) BeforeUpdate(*gorm.DB) error {
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(passwordHash)
+	user.Username = html.EscapeString(strings.TrimSpace(user.Username))
+	return nil
+}
+
+func Find(username string) (*User, error) {
+	var user = &User{}
+
+	err := database.Database.First(&user, "username = ?", username).Error
 
 	if err != nil {
 		return &User{}, err
