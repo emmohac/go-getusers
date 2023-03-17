@@ -71,5 +71,21 @@ func Update(context *gin.Context) {
 }
 
 func Delete(context *gin.Context) {
+	username := context.Param("id")
 
+	user, err := model.Find(username)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	deletedUser, er := user.Delete()
+
+	if er != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"user": deletedUser})
 }

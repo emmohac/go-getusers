@@ -76,3 +76,13 @@ func Find(username string) (*User, error) {
 
 	return user, nil
 }
+
+func (user *User) Delete() (*User, error) {
+	err := database.Database.Delete(&user).Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return user, nil
+}

@@ -66,7 +66,7 @@ func serveApplication() {
 		v1.GET("users", controller.FindAll)
 		v1.POST("users", controller.Create)
 		v1.PUT("users/:id", controller.Update)
-		v1.DELETE("users", controller.Delete)
+		v1.DELETE("users/:id", controller.Delete)
 	}
 
 	router.Run(":3000")
